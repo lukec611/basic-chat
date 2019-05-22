@@ -1,0 +1,8 @@
+
+@value co: green;
+
+.dark {
+    background-color: white;
+    color: #ffc0cb;
+    border: 1px dashed co;
+}
