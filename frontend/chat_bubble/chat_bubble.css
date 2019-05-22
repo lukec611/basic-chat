@@ -1,0 +1,14 @@
+
+
+.component {
+    background-color: lightblue;
+    padding: 16px;
+    border-radius: 16px;
+    width: 70%;
+}
+
+.other {
+    background-color: grey;
+    color: white;
+    align-self: flex-end;
+}
