@@ -3,8 +3,11 @@ import ReactDom from "react-dom";
 import { Btn } from './C.jsx';
 import { ChatBubble } from './chat_bubble/chat_bubble';
 import { ChatInput } from './chat_input/chat_input';
+import axios from 'axios';
 
 const element = document.getElementById('react-app');
+
+const myName = window.location.search ? window.location.search.split('=')[1] : 'unknown';
 
 function getRandomMessage() {
     const words = ['cat', 'dog', 'word', 'you', 'me', 'house', 'tree', 'chat', 'awesome', 'happy'];
@@ -20,12 +23,15 @@ const initialMessageList = messages.map((m, index) => ({
     fromOther: Math.random() < 0.1 ? ((index+1) % 2 === 0) : (index%2 === 0),
 }));
 
-function subscribe(add) {
+function subscribe(add, messageListLength) {
     let finished = false;
     (async () => {
         while(!finished) {
-            await new Promise(r => setTimeout(r, 2000));
-            if (!finished) add('adding sth');
+            await new Promise(r => setTimeout(r, 200));
+            if (!finished) {
+                const { data: { list } } = await axios.get(`/get-messages-after?index=${messageListLength}`);
+                if (list.length) add(list);
+            }
         }
     })();
     return () => {
@@ -35,7 +41,7 @@ function subscribe(add) {
 
 const ChatWindow = React.memo(() => {
 
-    const [messageList, setMessageList] = React.useState(initialMessageList);
+    const [messageList, setMessageList] = React.useState([]);
     const bottomElementRef = React.useRef(null);
 
     async function scrollTo() {
@@ -45,13 +51,24 @@ const ChatWindow = React.memo(() => {
     }
 
     function addTypedMessage(str, fromOther = false) {
-        setMessageList([...messageList, { message: str, fromOther }]);
-        scrollTo();
+        // setMessageList([...messageList, { message: str, fromOther }]);
+        // scrollTo();
+        axios.get(`/add-message?person=${myName}&m=${str}`);
     }
 
     React.useEffect(() => {
         // scrollTo();
-        return subscribe((s) => addTypedMessage(s, true));
+        return subscribe((list) => {
+            const newMessages = list.map(item => {
+                return {
+                    message: item.message,
+                    fromOther: item.person !== myName,
+                };
+            });
+            console.log(newMessages);
+            setMessageList([...messageList, ...newMessages]);
+            scrollTo();
+        }, messageList.length);
 
     });
 
