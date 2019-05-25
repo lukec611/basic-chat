@@ -4,7 +4,8 @@
   "description": "",
   "main": "postcss.config.js",
   "scripts": {
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "lukes611": "pm2 start --name basic-chat ./server.ts"
   },
   "keywords": [],
   "author": "",
