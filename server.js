@@ -1,4 +1,5 @@
 const express = require('express');
+const fs = require('fs');
 
 const app = express();
 
@@ -9,7 +10,7 @@ app.get('/', (req, res) => res.sendFile('./public/index.html'));
 let key = 0;
 const messages = [];
 const people = new Set();
-const password = 'FIREbrick42';
+const password = JSON.parse(fs.readFileSync('./pw.json'));
 
 app.get('/login', (req, res) => {
     const name = req.query.name;
