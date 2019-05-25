@@ -1,0 +1,10 @@
+
+.chatBubbleWrapper {
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.invisibleElement {
+    height: 40px;
+}

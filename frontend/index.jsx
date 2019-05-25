@@ -4,6 +4,7 @@ import { Btn } from './C.jsx';
 import { ChatBubble } from './chat_bubble/chat_bubble';
 import { ChatInput } from './chat_input/chat_input';
 import axios from 'axios';
+import { ChatWindow } from './chat_window/chat_window';
 
 const element = document.getElementById('react-app');
 
@@ -39,16 +40,16 @@ function subscribe(add, messageListLength) {
     };
 }
 
-const ChatWindow = React.memo(() => {
+const ChatWindowX = React.memo(() => {
 
-    const [messageList, setMessageList] = React.useState([]);
-    const bottomElementRef = React.useRef(null);
+    // const [messageList, setMessageList] = React.useState([]);
+    // const bottomElementRef = React.useRef(null);
 
-    async function scrollTo() {
-        await new Promise(r => setTimeout(r, 100));
-        if (!bottomElementRef.current) return;
-        bottomElementRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    // async function scrollTo() {
+    //     await new Promise(r => setTimeout(r, 100));
+    //     if (!bottomElementRef.current) return;
+    //     bottomElementRef.current.scrollIntoView({ behavior: "smooth" });
+    // }
 
     function addTypedMessage(str, fromOther = false) {
         // setMessageList([...messageList, { message: str, fromOther }]);
@@ -56,39 +57,40 @@ const ChatWindow = React.memo(() => {
         axios.get(`/add-message?person=${myName}&m=${str}`);
     }
 
-    React.useEffect(() => {
-        // scrollTo();
-        return subscribe((list) => {
-            const newMessages = list.map(item => {
-                return {
-                    message: item.message,
-                    fromOther: item.person !== myName,
-                };
-            });
-            console.log(newMessages);
-            setMessageList([...messageList, ...newMessages]);
-            scrollTo();
-        }, messageList.length);
+    // React.useEffect(() => {
+    //     // scrollTo();
+    //     return subscribe((list) => {
+    //         const newMessages = list.map(item => {
+    //             return {
+    //                 message: item.message,
+    //                 fromOther: item.person !== myName,
+    //             };
+    //         });
+    //         console.log(newMessages);
+    //         setMessageList([...messageList, ...newMessages]);
+    //         scrollTo();
+    //     }, messageList.length);
 
-    });
+    // });
 
     
 
     return (
         <div style={{ padding: '16px' }}>
-            {messageList.map((m, index) =>
+            <ChatWindow myName={myName}/>
+            {/* {messageList.map((m, index) =>
                 <div key={index} style={{ marginBottom: '8px', display: 'flex', flexDirection: 'column' }}>
                     <ChatBubble message={m.message} fromOther={m.fromOther} />
                 </div>
-            )}
-            <div ref={bottomElementRef} style={{ height: '40px' }}></div>
-            <ChatInput onSend={addTypedMessage}/>
+            )} */}
+            {/* <div ref={bottomElementRef} style={{ height: '40px' }}></div> */}
+            {/* <ChatInput onSend={addTypedMessage}/> */}
             
         </div>
     );
 });
 
-const App = React.memo(() => <ChatWindow/>);
+const App = React.memo(() => <ChatWindowX/>);
 
 
 ReactDom.render(<App />, element);
