@@ -4,3 +4,4 @@ public/*.html
 public/*.map
 frontend/package-lock.json
 package-lock.json
+pw.json
