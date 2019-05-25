@@ -1,0 +1,21 @@
+
+.root {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow-y: scroll;
+}
+
+.label, .item {
+    font-size: 30px;
+    padding: 8px 16px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    font-family: ubuntu;
+    color: black;
+}
+
+.item {
+    color: rgb(50, 50, 50);
+}

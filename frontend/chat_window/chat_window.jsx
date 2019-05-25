@@ -20,29 +20,34 @@ function delay(ms = POLL_INTERVAL_MS) {
 /**
  * 
  * @param {string} from 
+ * @param {string} to 
  * @param {string} message 
+ * @param {string} password 
  */
-function sendMessage(from, message) {
-    axios.get(`/add-message?person=${from}&m=${message}`);
+function sendMessage(from, to, message, password) {
+    axios.get(`/add-message?person=${from}&m=${message}&other=${to}&password=${password}`);
 }
 
 /**
  * 
  * @param {number|string} indexFrom 
+ * @param {string} myName 
+ * @param {string} other 
+ * @param {string} password
  * @returns {Array<Message>}
  */
-async function getMessages(indexFrom) {
-    const { data: { list } } = await axios.get(`/get-messages-after?index=${indexFrom}`);
+async function getMessages(indexFrom, myName, other, password) {
+    const { data: { list } } = await axios.get(`/get-messages-after?index=${indexFrom}&a=${myName}&b=${other}&password=${password}`);
     return list;
 }
 
-function subscribe(indexFrom, callback) {
+function subscribe(indexFrom, myName, otherName, password, callback) {
     let finished = false;
     (async () => {
         while(!finished) {
             await delay();
             if (!finished) {
-                const messages = await getMessages(indexFrom);
+                const messages = await getMessages(indexFrom, myName, otherName, password);
                 if (messages.length) callback(messages);
             }
         }
@@ -54,8 +59,12 @@ function subscribe(indexFrom, callback) {
 
 export const ChatWindow = React.memo((props) => {
 
+
+
     const [messages, setMessages] = useState([]);
     const myName = props.myName || 'unknown';
+    const password = props.password || 'unknown';
+    const chatWith = props.chatWith || 'unknown';
     const bottomElementRef = React.useRef(null);
 
     async function scrollToBottom() {
@@ -66,19 +75,21 @@ export const ChatWindow = React.memo((props) => {
 
     React.useEffect(() => {
         scrollToBottom();
-        return subscribe(messages.length, (newMessages) => {
+        return subscribe(messages.length, myName, chatWith, password, (newMessages) => {
             setMessages([...messages, ...newMessages]);
             scrollToBottom();
         });
     });
 
     function addMessage(message) {
-        sendMessage(myName, message);
+        sendMessage(myName, chatWith, message, password);
     }
 
     return (
         <div>
-            <h1>Chat window</h1>
+            <div className={styles.topBar}>
+                <button className={styles.goBack} onClick={props.goBack}>go back</button>
+            </div>
             {messages.map((m, index) =>
                 <div key={index} className={styles.chatBubbleWrapper} >
                     <ChatBubble message={m.message} fromOther={m.person !== myName} />

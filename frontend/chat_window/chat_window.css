@@ -1,4 +1,17 @@
 
+
+.topBar {
+    position: sticky;
+    top: 0;
+    left: 0;
+}
+
+.goBack {
+    padding: 4px;
+    border: 1px solid black;
+    border-radius: 8px;
+}
+
 .chatBubbleWrapper {
     margin-bottom: 8px;
     display: flex;
