@@ -1,24 +1,36 @@
 import React, { useState } from "react";
 import ReactDom from "react-dom";
 import { ChatWindow } from './chat_window/chat_window';
-import { SingleLineInput } from './dialog_input/single_line_input';
-import { ListPanel } from './list_panel/list_panel';
 import Axios from "axios";
 import { FriendSelect } from './friend_select/friend_select';
 import { LoginDialog } from './login_dialog/login_dialog';
 
 const element = document.getElementById('react-app');
 
-const Root = React.memo(() => {
+let initialState = {
+    loggedIn: false,
+    myName: '',
+    password: '',
+    chatWith: '',
+    loading: false,
+    error: '',
+};
+if (localStorage.getItem('loggedIn')) {
+    initialState = {
+        ...initialState,
+        loggedIn: true,
+        myName: localStorage.getItem('myName') || '',
+        password: localStorage.getItem('password') || '',
+        chatWith: localStorage.getItem('chatWith') || '',
+    };
+}
 
-    const [state, setState] = useState({
-        loggedIn: false,
-        myName: '',
-        password: '',
-        chatWith: '',
-        loading: false, // the name of the person chatting to
-        error: '',
-    });
+function logout() {
+    localStorage.clear();
+}
+
+const Root = React.memo(() => {
+    const [state, setState] = useState(initialState);
 
     async function login(name, password) {
         const state1 = {
@@ -35,6 +47,9 @@ const Root = React.memo(() => {
                 password,
                 loggedIn: true,
             });
+            localStorage.setItem('loggedIn', 'true');
+            localStorage.setItem('password', password);
+            localStorage.setItem('myName', name);
             return;
         }
         setState({
@@ -42,7 +57,6 @@ const Root = React.memo(() => {
             loading: false,
             error: 'wrong password...',
         });
-
     }
 
     function setChatWith(name) {
@@ -50,9 +64,8 @@ const Root = React.memo(() => {
             ...state,
             chatWith: name,
         });
+        localStorage.setItem('chatWith', name);
     }
-
-    console.log(state);
 
     
     if (state.loading) {
