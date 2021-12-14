@@ -27,8 +27,9 @@ export const LoginDialog = React.memo((props) => {
     return (
         <Dialog>
             <div className={styles.root}>
-                <div className={styles.label}>{props.label}</div>
+                <div className={styles.label}>username:</div>
                 <input className={styles.input} value={input} onChange={updateInput}/>
+                <div className={styles.label}>password:</div>
                 <input type="password" className={styles.input} value={password} onChange={updatePassword} onKeyDown={onKeyDown} />
                 <button className={styles.submitButton} onClick={submit}>submit</button>
             </div>
